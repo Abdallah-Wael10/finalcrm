@@ -18,6 +18,7 @@ export default function Reset() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const [userId, setUserId] = useState(null);
+  const URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const id = localStorage.getItem("userId");
@@ -47,7 +48,7 @@ export default function Reset() {
 
     try {
       // Call the API to change password
-      const response = await fetch(`http://localhost:5000/api/admin/${userId}`, {
+      const response = await fetch(`${URL}/api/admin/${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -21,6 +21,7 @@ export default function SignUp() {
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const URL = process.env.NEXT_PUBLIC_API_URL;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -46,7 +47,7 @@ export default function SignUp() {
 
     // Send the form data directly
     try {
-      const response = await fetch("http://localhost:5000/api/users/register", {
+      const response = await fetch(`${URL}/api/users/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

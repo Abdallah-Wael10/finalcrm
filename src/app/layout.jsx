@@ -1,7 +1,7 @@
 import localFont from "next/font/local";
 import "./globals.css";
-import { LeadDataProvider } from "./context/leadData/page";
 
+// Load custom fonts
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -18,13 +18,14 @@ export const metadata = {
   description: "CRM",
 };
 
-export default function RootLayout({ children, userId }) { // Accept userId as a prop
+// RootLayout component
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <LeadDataProvider> {/* Pass userId to LeadDataProvider */}
+
           {children}
-        </LeadDataProvider>
+
       </body>
     </html>
   );

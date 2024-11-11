@@ -12,9 +12,7 @@ import { useState, useEffect } from "react";
 import one from "./images/one.svg";
 import { Bar } from "react-chartjs-2";
 import LeadStatusSelector from "@/app/compnant/box/page";
-import { useContext } from "react";
 import { useRouter } from "next/navigation";
-import { Store } from "@/app/context/leadData/page";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -28,6 +26,8 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 const Dashboard = () => {
   const router = useRouter();
   const [userId, setUserId] = useState(null);
+  const URL = process.env.NEXT_PUBLIC_API_URL;
+
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [monthlyData, setMonthlyData] = useState({
     totalLeads: Array(12).fill(0),
@@ -42,12 +42,12 @@ const Dashboard = () => {
     const id = localStorage.getItem("userId");
     if (id) {
       setUserId(id);
-      fetch("http://localhost:5000/api/adminLeads")
+      fetch(`${URL}/api/adminLeads`)
         .then((res) => res.json())
         .then((data) => setCrmData(data))
         .catch((error) => console.error("Error fetching leads data:", error));
 
-      fetch("http://localhost:5000/api/admin")
+      fetch(`${URL}/api/admin`)
         .then((res) => res.json())
         .then((data) => {
           setDataUsers(data);
@@ -64,7 +64,7 @@ const Dashboard = () => {
       console.error("User ID not found in local storage");
       router.push("/pages/admin");
     }
-  }, [router]);
+  }, [URL,router]);
 
   useEffect(() => {
     if (crmData.length > 0 && userId) {
@@ -124,7 +124,7 @@ const Dashboard = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/adminLeads", {
+      const response = await fetch(`${URL}/api/adminLeads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(leadData),

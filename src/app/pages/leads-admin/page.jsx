@@ -6,8 +6,7 @@ import Image from 'next/image';
 import sort from "./images/sort.svg";
 import Card from '@/app/compnant/card/page';
 import Card2 from '@/app/compnant/card0/page';
-import { useContext } from 'react';
-import { Store } from '@/app/context/leadData/page';
+
 
 const Lead = () => {
     const [dataUsers, setDataUsers] = useState([]);
@@ -15,6 +14,7 @@ const Lead = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [userIdd, setUserIdd] = useState(null);
+    const URL = process.env.NEXT_PUBLIC_API_URL;
 
     useEffect(() => {
         // Retrieve user ID from localStorage
@@ -26,7 +26,7 @@ const Lead = () => {
         }
 
         // Fetch user data from API
-        fetch("http://localhost:5000/api/admin")
+        fetch(`${URL}/api/admin`)
             .then((res) => res.json())
             .then((data) => {
                 setDataUsers(data);
@@ -39,7 +39,7 @@ const Lead = () => {
                 }
             })
             .catch((error) => console.log("Error fetching data:", error));
-    }, [userIdd]);
+    }, [URL,userIdd]);
 
     const userName = `${firstName} ${lastName}`;
     const statusOptions = [
@@ -53,7 +53,7 @@ const Lead = () => {
     ];
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/adminLeads")
+        fetch(`${URL}/api/adminLeads`)
             .then(res => res.json())
             .then((dataa) => {
                 setCrmData(dataa);
@@ -61,7 +61,7 @@ const Lead = () => {
             .catch((error) => {
                 console.error("Error fetching data:", error);
             });
-    }, []);
+    }, [URL]);
 
     const [search, setSearch] = useState("");
     const [selectLead, setSelectLead] = useState("all leads"); // Default to "All Leads"

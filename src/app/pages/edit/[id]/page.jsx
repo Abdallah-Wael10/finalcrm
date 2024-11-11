@@ -7,6 +7,7 @@ import LeadStatusSelector from "@/app/compnant/box/page";
 const Edit = () => {
   const { id } = useParams(); // Get the ID from the URL params
   const [leadSource, setLeadSource] = useState("FaceBook");
+  const URL = process.env.NEXT_PUBLIC_API_URL;
 
   const [formData, setFormData] = useState({
     clientName: "",
@@ -49,7 +50,7 @@ const Edit = () => {
   useEffect(() => {
     // Fetch user data only after userIdd is set
     if (userIdd) {
-      fetch("http://localhost:5000/api/users")
+      fetch(`${URL}/api/users`)
         .then((res) => res.json())
         .then((data) => {
           setDataUsers(data);
@@ -63,7 +64,7 @@ const Edit = () => {
         })
         .catch((error) => console.log("Error fetching data:", error));
     }
-  }, [userIdd]);
+  }, [ URL,userIdd]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
@@ -71,7 +72,7 @@ const Edit = () => {
   useEffect(() => {
     const fetchLeadData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/userLeads/${id}`);
+        const response = await fetch(`${URL}/api/userLeads/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch lead data");
         }
@@ -86,7 +87,7 @@ const Edit = () => {
     if (id) {
       fetchLeadData();
     }
-  }, [id]);
+  }, [URL,id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

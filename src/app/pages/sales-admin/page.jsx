@@ -9,12 +9,13 @@ const Sales = () => {
   const [salesLeadsData, setSalesLeadsData] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
   const [search, setSearch] = useState("");
+  const URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const fetchAndCombineData = async () => {
       try {
-        const leadsResponse = await fetch("http://localhost:5000/api/userLeads");
-        const usersResponse = await fetch("http://localhost:5000/api/users");
+        const leadsResponse = await fetch(`${URL}/api/userLeads`);
+        const usersResponse = await fetch(`${URL}/api/users`);
         const leadsData = await leadsResponse.json();
         const usersData = await usersResponse.json();
   
@@ -101,24 +102,24 @@ const Sales = () => {
     };
   
     fetchAndCombineData();
-  }, [salesLeadsData]);
+  }, [URL,salesLeadsData]);
   
 
   const deleteUserAndLeads = async (userId) => {
     try {
-      const leadsResponse = await fetch("http://localhost:5000/api/userLeads");
+      const leadsResponse = await fetch(`${URL}/api/userLeads`);
       const leadsData = await leadsResponse.json();
       const userLeads = leadsData.filter((lead) => lead.userId === userId);
 
       await Promise.all(
         userLeads.map((lead) =>
-          fetch(`http://localhost:5000/api/userLeads/${lead.id}`, {
+          fetch(`${URL}/api/userLeads/${lead.id}`, {
             method: "DELETE",
           })
         )
       );
 
-      await fetch(`http://localhost:5000/api/users/${userId}`, {
+      await fetch(`${URL}/api/users/${userId}`, {
         method: "DELETE",
       });
 

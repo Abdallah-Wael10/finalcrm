@@ -16,13 +16,13 @@ export default function Home() {
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-
+  const URL = process.env.NEXT_PUBLIC_API_URL;
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-        const response = await fetch("http://localhost:5000/api/users/login", {
+        const response = await fetch(`${URL}/api/users/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -45,7 +45,7 @@ export default function Home() {
             localStorage.setItem("userId", data._id);
 
             // Redirect to dashboard
-            window.location.href = "/pages/dashboard";
+            router.push("/pages/dashboard")
         } else {
             setErrorMessage("Invalid email or password.");
         }

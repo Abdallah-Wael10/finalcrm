@@ -14,7 +14,7 @@ import { Bar } from "react-chartjs-2";
 import LeadStatusSelector from "@/app/compnant/box/page";
 import { useContext } from "react";
 import { useRouter } from "next/navigation";
-import { Store } from "@/app/context/leadData/page";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -27,7 +27,27 @@ import {
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 const Dashboard = () => {
   const router = useRouter();
-  const { data: crmData, loading, error } = useContext(Store);
+  const [crmData, setCrmData] = useState([]);
+    const URL = process.env.NEXT_PUBLIC_API_URL;
+
+    useEffect(() => {
+      // Retrieve user ID from localStorage
+      const userId = localStorage.getItem("userId");
+      
+      if (userId) {
+        // Fetch leads data from the API and filter by user ID
+        fetch(`${URL}/api/userLeads`) // Update the endpoint for fetching leads data
+          .then((res) => res.json())
+          .then((data) => {
+            // Filter the leads by userId
+            const filteredLeads = data.filter(lead => lead.userId === userId);
+            setCrmData(filteredLeads); // Update the state with filtered leads
+          })
+          .catch((error) => console.error("Error fetching CRM data:", error));
+      } else {
+        console.error("User ID not found in localStorage");
+      }
+    }, [URL]);
 
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [monthlyData, setMonthlyData] = useState({
@@ -51,7 +71,7 @@ const Dashboard = () => {
     }
 
     // Fetch user data from API
-    fetch("http://localhost:5000/api/users")
+    fetch(`${URL}/api/users`)
       .then((res) => res.json())
       .then((data) => {
         setDataUsers(data);
@@ -66,7 +86,7 @@ const Dashboard = () => {
         }
       })
       .catch((error) => console.log("Error fetching data:", error));
-  }, []);
+  }, [URL]);
   useEffect(() => {
     if (crmData && crmData.length > 0) {
       const leadsByMonth = Array(12).fill(0);
@@ -109,9 +129,9 @@ const Dashboard = () => {
     } else {
       console.error("User ID not found in local storage");
       // Optionally, redirect to login if userId is not found
-      window.location.href = "/"; // Adjust to your login page route
+      router.push("/")
     }
-  }, []);
+  }, [URL,router]);
   const handleData = async (e) => {
     e.preventDefault();
   
@@ -136,7 +156,7 @@ const Dashboard = () => {
   
     try {
       const response = await fetch(
-        "http://localhost:5000/api/userLeads/",
+        `${URL}/api/userLeads/`,
         {
           method: "POST",
           headers: {
@@ -163,7 +183,6 @@ const Dashboard = () => {
   
         // Redirect to /pages/leads
         router.push("/pages/leads");
-        window.location.href = "/pages/leads"
       } else {
         console.error("Failed to add lead:", response.statusText);
       }
